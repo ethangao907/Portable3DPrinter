@@ -13,8 +13,8 @@ Desktop printers waste their whole volume when idle: the frame has to stay as ta
 
 The trade-off is that scissor lifts amplify backlash and load at low angles, so pivot quality, preload, bearing choice, and arm stiffness all matter. The build uses two preloaded pivots per side, thrust/axial bearings clamped with bolts, ~50 × 6 mm shoulder bolts at the stationary bottom pivot pair, and compliant printed clamps to hold everything tight.
 
-(images/BatteryPrinterExpanded.png)
-(images/BatteryPrinterStowed.png)
+![CAD Expanded](images/BatteryPrinterExpanded.png)
+![CAD Stowed](images/BatteryPrinterStowed.png)
 
 ## Inside the machine
 
