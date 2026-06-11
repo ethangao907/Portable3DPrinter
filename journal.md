@@ -19,6 +19,7 @@ What I extracted:
 - Diagonal arm mounting for weight distribution was proposed in their logs and never resolved.
 
 ![XPrinterV1](images/XPrinter.png)
+*X Printer V1*
 
 ## Late January 2026 — Analysis phase
 
@@ -38,12 +39,14 @@ Mapped mechanical advantage and lift force vs angle. Lift force for mass m is F 
 - Considered diagonal bracing wires or carbon rods from base corners to top platform for extended-state stiffness.
 
 ![Calculations in Desmos](images/desmos.png)
+*Calculations in Desmos*
 
 ### Minimum Z height
 
 100mm is the absolute floor (covers ~80% of typical hobbyist prints), 150mm is comfortable (~95%), 75mm is too limiting (~50%). Aimed above 150mm.
 
 ![LayoutSketch](images/Layout.png)
+*Layout Sketch for Z height*
 
 ### Z actuator trade study
 
@@ -54,12 +57,16 @@ Three options. Vertical central lead screw (simple kinematics, needs a screw as 
 Compared Sprite (280g, heaviest), BIQU H2 (220g, 7:1, 80-90N extrusion force, integrated hotend), Sherpa Mini (90g, recommended for the power and weight budget), Orbiter V2 (140g), LGX Lite (160g), DIY Bowden (lightest, worst quality). Chose the H2 for v1 despite the weight.
 
 ![Cad Inception](images/C1.png)
+*Cad Inception; All concrete hardware imported*
 
 ### Power architecture
 
 Two architectures considered. Off-the-shelf DC UPS module (turnkey, protections built in, sub-10ms switchover) vs custom ideal-diode OR-ing (LTC4352/LTC4353 controller or TPS2121 power mux, 6S BMS with 4.2V/cell overcharge and 3.0V/cell overdischarge cutoffs, balance, 15-20A overcurrent). Went custom.
 
 Worked through LiPo fundamentals to ground the design. Voltage maps directly to state of charge (4.20V full, 3.30V effectively empty, below 3.0V copper dissolution permanently damages the cell, above 4.2V dendrite formation risk). Capacity 22Ah at 22.2V nominal is ~488Wh. Key realization on charging, the Meanwell PSU set to exactly 25.2V with its 13A current limit performs CC/CV natively. The current limit is the CC phase, the regulated output is the CV phase, current tapers naturally as battery voltage approaches the rail. No additional charge circuitry needed, the BMS handles protection and the ideal diode handles the path. End behavior is laptop-like, plug or unplug mid-print in either direction with no interruption.
+
+![Internals](images/Internal.png)
+*Internal electronics layout (note huge battery)*
 
 ### XY mechanism alternatives
 
@@ -72,8 +79,10 @@ Layout sketches and spatial budgets before any geometry. Hardware defines positi
 Misc from this period, 90° bend duct losses on the blower fan, battery bay ventilation requirements.
 
 ![Cad Progress 2](images/C2.png)
+*Cad Progress 2*
 
 ![Preload_Stacks](images/Preload.png)
+*Preloaded joints for increased scissor rigidity*
 
 ---
 
@@ -82,12 +91,15 @@ Misc from this period, 90° bend duct losses on the blower fan, battery bay vent
 Most CAD happened here, less documented research and calculations. Notably, I fit 3 linear rails, two axial + thrust bearing preload stacks, and a CoreXY cable routing into a 25x80mm cross section. Parts reached up to V7.
 
 ![Cross section](images/cs.png)
+*This packing is my magnum opus*
 
 The packaging process that emerged, set the baseline envelope first (300×300×80mm fold, scissor lift, 10h battery target, direct drive toolhead), calculate from constraints to a real parts list, import parts into CAD and arrange until a configuration fits, then design the printed "glue" brackets that hold the off-the-shelf parts in that arrangement.
 
 ![Cad Progress 3](images/C3.png)
+*Cad Progress 3*
 
 ![Central Preload](images/Center.png)
+*Center pivot preload stack*
 
 ### March 30 — Dyneema pulley design
 
@@ -97,9 +109,11 @@ The packaging process that emerged, set the baseline envelope first (300×300×8
 - For the multi-wrap drive capstan, a smooth drum was chosen over a helical groove. The helix forms naturally from approach angle, constant radius everywhere, at the cost of possible axial walking.
 - Wrap count sized with the capstan equation using a conservative Dyneema-on-PLA COF of 0.05-0.10 against a worst-case inertial load of F = ma ≈ 0.25kg × 3 m/s² = 0.75N at a modest 3000 mm/s² CoreXY acceleration.
 
-![Pulley string engagement angle](images/Helix.png)
+![Single part to route the cable was very complex](images/Router.png)
+*Single very complex part to route the cable optimally*
 
 ![Angled idlers passing string under the gantry plate](images/Angle.png)
+*Angled idlers passing string under the gantry plate to save space*
 
 ### April 2 — Drive pulley sizing and routing
 
@@ -109,8 +123,10 @@ The packaging process that emerged, set the baseline envelope first (300×300×8
 - Routing geometry decision, linear height increase across a 2-segment span requires one bearing tilted in both x and y.
 
 ![Realizing that pulleys with relative motion in CoreXY must be collinear](images/CoreXYfail.png)
+*Realizing that pulleys with relative motioin in CoreXY must be collinear or else conservation of string is violated*
 
 ![Completed Routing](images/Routing.png)
+*Completed cable routing path*
 
 ### April 4 — Nonlinear Z in Klipper, v1 spec complete
 
@@ -129,6 +145,13 @@ v1 spec as fully written at this point:
 - Nested scissor arms, every pivot preloaded with a thrust + axial (deep groove) bearing combination clamped by bolt and nut. The stationary bottom pivot pair, the most critical joints, use 50mm × 6mm shoulder bolts in compliant printed clamps.
 - One MGN9 rail nests into the scissor arm itself, so three MGN9 rails, two preloaded pivot assemblies, and the full CoreXY cable routing coexist in an 80×25mm cross section.
 - CoreXY driven by Dyneema instead of GT2. The cable crosses itself multiple times, threads under mounting plates, tensioned by two adjustable rear screw tensioners. Dyneema twists out of plane between pulleys, which belts cannot, and is 20-40x stiffer per cross section, worst-case position error ~0.08mm over full travel.
+
+![Shoulder bolt clamping part and thrust bearing mounting part](images/Clamp.png)
+*Shoulder bolt clamping part and thrust bearing mount; took me a whole week to get right*
+
+![Cross section showing all scissor assemblies](images/cad-internal.png)
+*Cross section showign all scissor assemblies*
+
 - BIQU H2 direct drive, 4020 blower for part cooling, BLTouch at 0mm X / 24mm Y offset to minimize lost bed mesh area.
 - 6S 22Ah LiPo + slim 400W Meanwell 24V PSU through the ideal-diode OR-ing circuit. Simultaneous wall printing and charging, seamless switchover both directions. ~50W system draw with no heated bed, 8-10 hour theoretical runtime.
 - Klipper on a Raspberry Pi Zero 2W over WiFi (later Pi 4 in the built machine), BTT SKR Mini E3 V3, BTT Mini 12864 display.
@@ -139,6 +162,9 @@ Also worked out a battery level display hack, expose the pack voltage through a 
 ### April 20 — Capstan walking
 
 The major v1 failure mode. Under rotation the Dyneema migrates axially along the smooth drum and bunches at one end until the system jams. Rope clumped, wraps locked, the carriage stalled. The lesson, cable behavior on small drums with mismatched inlet/outlet heights is a contact mechanics problem, not a geometry problem.
+
+![Pulley string engagement angle](images/Helix.png)
+*Pulley string engagement angle causes thicker string to walk*
 
 Solutions considered, helical grooves (ruled out, unlimited bidirectional rotation and no axial room), fleet angle correction via shaft tilt, fairlead pulleys, Jake Read's double idler, translating drum. Converged on a self-tailing winch mechanism from sailing hardware as the most promising structural fix. The self-tailing guide physically forces the rope back to a fixed axial exit position every revolution, eliminating the walk instead of slowing it.
 
@@ -159,6 +185,9 @@ Quantitative pass:
 - Sourcing, high-quality 8-carrier braided fishing line (Sufix 832, PowerPro Super 8 Slick) is functionally identical to marketed Dyneema rope at a fraction of the cost, 80-100 lb test corresponds to the target diameter.
 - Perspective on tension error sources, acceleration loads (~2N at 5000 mm/s² with a 400g head), creep bed-in (10-20% preload loss over the first days, slow creep after), enclosure temperature, and capstan friction at each direction change are all 10-100x larger than fleet-angle effects. Fleet-angle stretch and the positioning violation are the same 0.08mm viewed two ways, not additive.
 
+![Solution: thinner string (fishing line)](images/Cables.PNG)
+*Solution: thinner string (dyneema fishing line)*
+
 ---
 
 ## May 2026
@@ -171,11 +200,26 @@ Motor spin tests. Second pass on the kinematics with new physics caught:
 - Velocity limits. Motor velocity = toolhead velocity / gain, so the motor flies at the low-gain top of travel. max_z_velocity is set by worst case, homing and probing speeds need attention.
 - Implementation path confirmed, custom kinematics file with delta.py as the reference (delta Z is also nonlinear with tower position), a C helper through `setup_itersolve` in `klippy/chelper/`. The win over gcode remapping or post-processing, bed_mesh, probing, and axis_twist_compensation all operate in nozzle Z space and keep working.
 
+![Nonlinear Z bridge assembly](images/Bridge.png)
+*Nonlinear-Z bridge assembly*
+
 ### May 9-15 — V1 status, captured mid-build
 
 Status at this point, mechanical architecture fully designed, CAD complete, several structural parts printed, upper gantry partially assembled. The scissor pivot system was the most-iterated section, getting scissor stiffness right without machined components took multiple revisions. The active technical problem was XY cable routing at the spool level, with thinner cable (~0.8mm), level-wind guidance, and GT2 on selected paths under evaluation.
 
 Competitive landscape as mapped, Positron V3 is the nearest prior art but runs a 200W external PSU. Prior battery attempts (a 2020 student DVD-drive build, TOME, Pbag) failed on ~3 hour runtimes, tiny volumes, or never reaching reproducible form. Reference desktop machines (A1, MK4, Ender 3) pack ~220×220×250 build volumes into footprints roughly 4x the print area, mostly frame, motors, and dead air. Positron hits ~95% volumetric efficiency but is mains-tethered.
+
+![Front view V1](images/Front.png)
+*V1 Front view*
+
+![Extruder Area with BLTouch](images/Extruder.png)
+*Extruder Area with BLTouch*
+
+![Completed V1 CAD](images/CADFinal.png)
+*Completed V1 CAD*
+
+![stowed](images/stowed.png)
+*stowed*
 
 ### May 18 — The V2 fork
 
@@ -189,6 +233,9 @@ Dual side lead screws confirmed as the central v2 architecture change, replacing
 - Screws placed along the scissor pivot axis so they fold into the same plane as the scissors. Screw length cannot exceed folded height, which couples build height to folded thickness.
 - Lead screws with anti-backlash nuts over ball screws (cheaper, quieter, alignment-abuse tolerant), T8x8 standard.
 - Electronics relocate behind the filament roll. Filament path must not cross the PCB, board must stay accessible without removing the spool.
+
+![V2 aims to store an entire filament roll inside](images/V2Cad.png)
+*V2 drops the battery and aims to store an entire filament roll inside*
 
 The 90° toolhead problem named explicitly. An H2 cannot be rotated, its motor and gear geometry assume vertical filament drop. Paths considered, commission the open-source Positron 90° hotend + horizontal extruder (fastest, proven), design a custom horizontal extruder around the Positron hotend (~4 weeks CAD + machining), or full scratch design (3-6 months, kills the timeline).
 
