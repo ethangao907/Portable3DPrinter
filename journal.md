@@ -1,5 +1,6 @@
 # Portable 3D Printer — Project Journal
-AI compiled  
+I compiled this with AI
+
 Design log for the folding portable printer, January 2026 to present.
 
 ---

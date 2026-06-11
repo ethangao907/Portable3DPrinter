@@ -1,4 +1,7 @@
 # Portable 3D Printer
+**I document everything here** https://www.instagram.com/gao.lab/
+
+**Latest Reel** https://www.instagram.com/p/DYTzN6iu2yM/
 
 **Engineering plastics capable, enclosed, direct drive, folding portable 3D printer that fits in a bag**
 
