@@ -1,6 +1,8 @@
 # Portable 3D Printer
 **I document everything here** https://www.instagram.com/gao.lab/
 
+**Latest Reel** https://www.instagram.com/p/DYTzN6iu2yM/
+
 **Engineering plastics capable, enclosed, direct drive, folding portable 3D printer that fits in a bag**
 
 This printer collapses to a thin slab roughly the size of a laptop bag, then expands on a scissor-lift Z axis into a useful print volume. It is built almost entirely from 3D-printed parts on consumer machines, takes power from the same M18/DeWalt-class packs, and runs an enclosed heated chamber for ABS, ASA, and nylon. 
