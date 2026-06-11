@@ -90,7 +90,7 @@ Misc from this period, 90° bend duct losses on the blower fan, battery bay vent
 
 Most CAD happened here, less documented research and calculations. Notably, I fit 3 linear rails, two axial + thrust bearing preload stacks, and a CoreXY cable routing into a 25x80mm cross section. Parts reached up to V7.
 
-![Cross section](images/cs.png)
+![Cross section](images/cs1.png)
 *This packing is my magnum opus*
 
 The packaging process that emerged, set the baseline envelope first (300×300×80mm fold, scissor lift, 10h battery target, direct drive toolhead), calculate from constraints to a real parts list, import parts into CAD and arrange until a configuration fits, then design the printed "glue" brackets that hold the off-the-shelf parts in that arrangement.
