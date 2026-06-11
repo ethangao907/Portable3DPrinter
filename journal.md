@@ -18,6 +18,8 @@ What I extracted:
 - Bowden vs direct drive debate in their community. They chose Bowden purely for space. Decided on direct drive for my version. The scissor already adds enough variables (nonlinear motion, backlash, mechanical complexity) without stacking retraction tuning and tube friction on top.
 - Diagonal arm mounting for weight distribution was proposed in their logs and never resolved.
 
+![XPrinterV1](images/XPrinter.png)
+
 ## Late January 2026 — Analysis phase
 
 ### Scissor kinematics
@@ -35,9 +37,13 @@ Mapped mechanical advantage and lift force vs angle. Lift force for mass m is F 
 - Link length sized as L = target height / sin(70°), landing around 200mm.
 - Considered diagonal bracing wires or carbon rods from base corners to top platform for extended-state stiffness.
 
+![Calculations in Desmos](images/desmos.png)
+
 ### Minimum Z height
 
 100mm is the absolute floor (covers ~80% of typical hobbyist prints), 150mm is comfortable (~95%), 75mm is too limiting (~50%). Aimed above 150mm.
+
+![LayoutSketch](images/Layout.png)
 
 ### Z actuator trade study
 
@@ -46,6 +52,8 @@ Three options. Vertical central lead screw (simple kinematics, needs a screw as 
 ### Extruder trade study
 
 Compared Sprite (280g, heaviest), BIQU H2 (220g, 7:1, 80-90N extrusion force, integrated hotend), Sherpa Mini (90g, recommended for the power and weight budget), Orbiter V2 (140g), LGX Lite (160g), DIY Bowden (lightest, worst quality). Chose the H2 for v1 despite the weight.
+
+![Cad Inception](images/C1.png)
 
 ### Power architecture
 
@@ -63,13 +71,23 @@ Layout sketches and spatial budgets before any geometry. Hardware defines positi
 
 Misc from this period, 90° bend duct losses on the blower fan, battery bay ventilation requirements.
 
+![Cad Progress 2](images/C2.png)
+
+![Preload_Stacks](images/Preload.png)
+
 ---
 
 ## February–March 2026 — V1 CAD and fabrication
 
 Most CAD happened here, less documented research and calculations. Notably, I fit 3 linear rails, two axial + thrust bearing preload stacks, and a CoreXY cable routing into a 25x80mm cross section. Parts reached up to V7.
 
+![Cross section](images/cs.png)
+
 The packaging process that emerged, set the baseline envelope first (300×300×80mm fold, scissor lift, 10h battery target, direct drive toolhead), calculate from constraints to a real parts list, import parts into CAD and arrange until a configuration fits, then design the printed "glue" brackets that hold the off-the-shelf parts in that arrangement.
+
+![Cad Progress 3](images/C3.png)
+
+![Central Preload](images/Center.png)
 
 ### March 30 — Dyneema pulley design
 
@@ -79,12 +97,20 @@ The packaging process that emerged, set the baseline envelope first (300×300×8
 - For the multi-wrap drive capstan, a smooth drum was chosen over a helical groove. The helix forms naturally from approach angle, constant radius everywhere, at the cost of possible axial walking.
 - Wrap count sized with the capstan equation using a conservative Dyneema-on-PLA COF of 0.05-0.10 against a worst-case inertial load of F = ma ≈ 0.25kg × 3 m/s² = 0.75N at a modest 3000 mm/s² CoreXY acceleration.
 
+![Pulley string engagement angle](images/Helix.png)
+
+![Angled idlers passing string under the gantry plate](images/Angle.png)
+
 ### April 2 — Drive pulley sizing and routing
 
 - Drum diameter set to 80/π mm so circumference is exactly 80mm and steps/mm divides cleanly. Klipper doesn't strictly need integer steps/mm, but it avoids rounding accumulation and makes calibration math clean.
 - Effective wrap diameter includes one cable diameter on top of the groove minor diameter, and changes slightly under tension.
 - Checked whether a wrap-angle difference between the two CoreXY paths matters (3 wraps vs 3 wraps + 10° at 10N). Capstan ratio difference ~1%, slip impossible at that wrap count. The real path-matching concern is stretch consistency between unequal path lengths, not wrap angle.
 - Routing geometry decision, linear height increase across a 2-segment span requires one bearing tilted in both x and y.
+
+![Realizing that pulleys with relative motion in CoreXY must be collinear](images/CoreXYfail.png)
+
+![Completed Routing](images/Routing.png)
 
 ### April 4 — Nonlinear Z in Klipper, v1 spec complete
 
